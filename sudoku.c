@@ -398,9 +398,9 @@ void loadPuzzle(int (*board)[SIZE], int (*solution)[SIZE], int difficulty)
     int i, j;
 
     switch (difficulty) {
-        case 1:  filename = "easy.txt"; break;
-        case 2:  filename = "med.txt";  break;
-        default: filename = "hard.txt"; break;
+        case 1:  filename = "data/easy.txt"; break;
+        case 2:  filename = "data/med.txt";  break;
+        default: filename = "data/hard.txt"; break;
     }
 
     totalPuzzles = countLines(filename);
