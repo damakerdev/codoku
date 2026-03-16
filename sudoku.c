@@ -386,26 +386,36 @@ int countLines(const char *filename)
 }
 
 /* ------------------------------------------------------------------ */
-/*  Load a random puzzle from the chosen difficulty file              */
-/*  Also loads the solution from the corresponding sol file           */
+/*  Load puzzle from difficulty file and solution from sol.txt        */
 /* ------------------------------------------------------------------ */
 void loadPuzzle(int (*board)[SIZE], int (*solution)[SIZE], int difficulty)
 {
-    const char *filename, *solfilename;
-    FILE *fp, *solfp;
-    char line[MAX_LINE], solline[MAX_LINE];
+    const char *puzzle_filename;
+    const char *sol_filename = "data/sol.txt";
+    const char *section_header;
+    FILE *puzzle_fp, *sol_fp;
+    char line[MAX_LINE];
     int totalPuzzles, chosen, current;
     int i, j;
 
     switch (difficulty) {
-        case 1:  filename = "levels/easy.txt"; solfilename = "levels/sol_easy.txt"; break;
-        case 2:  filename = "levels/med.txt";  solfilename = "levels/sol_med.txt";  break;
-        default: filename = "levels/hard.txt"; solfilename = "levels/sol_hard.txt"; break;
+        case 1:  
+            puzzle_filename = "data/easy.txt";
+            section_header = "[EASY]";
+            break;
+        case 2:  
+            puzzle_filename = "data/med.txt";
+            section_header = "[MED]";
+            break;
+        default: 
+            puzzle_filename = "data/hard.txt";
+            section_header = "[HARD]";
+            break;
     }
 
-    totalPuzzles = countLines(filename);
+    totalPuzzles = countLines(puzzle_filename);
     if (totalPuzzles == 0) {
-        printf("Error: Could not open or read '%s'.\n", filename);
+        printf("Error: Could not open or read '%s'.\n", puzzle_filename);
         printf("Make sure the file exists and contains valid puzzles.\n");
         exit(1);
     }
@@ -413,14 +423,14 @@ void loadPuzzle(int (*board)[SIZE], int (*solution)[SIZE], int difficulty)
     /* Pick a random puzzle index */
     chosen = rand() % totalPuzzles;
 
-    fp = fopen(filename, "r");
-    if (fp == NULL) {
-        printf("Error: Could not open '%s'.\n", filename);
+    puzzle_fp = fopen(puzzle_filename, "r");
+    if (puzzle_fp == NULL) {
+        printf("Error: Could not open '%s'.\n", puzzle_filename);
         exit(1);
     }
 
     current = 0;
-    while (fgets(line, MAX_LINE, fp) != NULL) {
+    while (fgets(line, MAX_LINE, puzzle_fp) != NULL) {
         if (strlen(line) >= 81) {
             if (current == chosen) {
                 break;
@@ -428,25 +438,7 @@ void loadPuzzle(int (*board)[SIZE], int (*solution)[SIZE], int difficulty)
             current++;
         }
     }
-    fclose(fp);
-
-    /* Load the corresponding solution */
-    solfp = fopen(solfilename, "r");
-    if (solfp == NULL) {
-        printf("Error: Could not open '%s'.\n", solfilename);
-        exit(1);
-    }
-
-    current = 0;
-    while (fgets(solline, MAX_LINE, solfp) != NULL) {
-        if (strlen(solline) >= 81) {
-            if (current == chosen) {
-                break;
-            }
-            current++;
-        }
-    }
-    fclose(solfp);
+    fclose(puzzle_fp);
 
     /* Parse the 81-character line into the 9x9 board */
     i = 0;
@@ -459,16 +451,54 @@ void loadPuzzle(int (*board)[SIZE], int (*solution)[SIZE], int difficulty)
         i++;
     }
 
-    /* Parse the solution line */
-    i = 0;
-    while (i < SIZE) {
-        j = 0;
-        while (j < SIZE) {
-            solution[i][j] = solline[i * SIZE + j] - '0';
-            j++;
-        }
-        i++;
+    /* Load corresponding solution from sol.txt */
+    sol_fp = fopen(sol_filename, "r");
+    if (sol_fp == NULL) {
+        printf("Error: Could not open '%s'.\n", sol_filename);
+        printf("Make sure sol.txt exists in the levels folder.\n");
+        exit(1);
     }
+
+    /* Skip to the correct section */
+    int found_section = 0;
+    while (fgets(line, MAX_LINE, sol_fp) != NULL) {
+        if (strncmp(line, section_header, strlen(section_header)) == 0) {
+            found_section = 1;
+            break;
+        }
+    }
+
+    if (!found_section) {
+        printf("Error: Could not find section '%s' in sol.txt.\n", section_header);
+        fclose(sol_fp);
+        exit(1);
+    }
+
+    /* Read the chosen solution */
+    current = 0;
+    while (fgets(line, MAX_LINE, sol_fp) != NULL) {
+        /* Skip section headers and empty lines */
+        if (line[0] == '[' || strlen(line) < 81) {
+            break;
+        }
+        
+        if (current == chosen) {
+            /* Parse the solution */
+            i = 0;
+            while (i < SIZE) {
+                j = 0;
+                while (j < SIZE) {
+                    solution[i][j] = line[i * SIZE + j] - '0';
+                    j++;
+                }
+                i++;
+            }
+            break;
+        }
+        current++;
+    }
+
+    fclose(sol_fp);
 }
 
 /* ================================================================== */
