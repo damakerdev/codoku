@@ -154,7 +154,7 @@ void drawBoard(int (*board)[SIZE], int (*fixed)[SIZE], int curRow, int curCol, c
     /* Header bar */
     printf("\n");
     setColor(CLR_TITLE);
-    printf("   SUDOKU");
+    printf("   CODOKU");
     setColor(CLR_BORDER);
     printf("  |  ");
     setColor(diffColor);
@@ -711,7 +711,7 @@ int main(void)
     clearScreen();
     printf("\n");
     setColor(CLR_TITLE);
-    printf("   Thanks for playing SUDOKU!\n");
+    printf("   Thanks for playing CODOKU!\n");
     setColor(CLR_CREDITS);
     printf("   Goodbye!\n\n");
     setColor(CLR_RESET);
