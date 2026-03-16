@@ -28,7 +28,8 @@ A terminal based Sudoku game for Windows built in C.
 
 - Windows OS
 - GCC or any C compiler (e.g. MinGW)
-- Puzzle files: `easy.txt`, `med.txt`, `hard.txt` in the `levels/` folder.
+- Puzzle files: `easy.txt`, `med.txt`, `hard.txt` in the `data/` folder
+- Solution file: `sol.txt` in the `data/` folder containing pre-solved solutions
 
 ---
 
@@ -86,6 +87,18 @@ Each line in the `.txt` files is one puzzle:  81 digits in a row, left to right,
 
 ---
 
+## Limitations
+
+- **Pre-solved Solutions**: The game uses solved solutions stored in `sol.txt` rather than solving puzzles algorithmically. This was implemented to avoid performance issues with complex puzzles (especially hard difficulty levels).
+
+---
+
+## Future Improvement
+
+- The backtracking algorithm can be integrated in future versions for dynamic solution generation. This would eliminate the need for `sol.txt`.
+
+---
+
 ## Project Structure
 
 ```
@@ -94,5 +107,6 @@ data/
   easy.txt         — easy puzzles
   med.txt          — medium puzzles
   hard.txt         — hard puzzles
+  sol.txt          — solutions (organized by [EASY], [MED], [HARD] sections)
 README.md          — this file
 ```
