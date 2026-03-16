@@ -22,6 +22,8 @@ A terminal based Sudoku game for Windows built in C.
 - Solution reveal on game over
 - Play again without restarting the program
 
+![Home Screen](images/home-screen.png)
+
 ---
 
 ## Requirements
@@ -55,6 +57,8 @@ gcc sudoku.c -o sudoku.exe
 | 1 – 9 | Place a number |
 | 0 / Backspace | Clear a cell |
 | ESC | Quit |
+
+![Gameplay](images/gameplay.gif)
 
 ---
 
