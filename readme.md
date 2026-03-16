@@ -121,3 +121,55 @@ data/
   sol.txt          — solutions (organized by [EASY], [MED], [HARD] sections)
 README.md          — this file
 ```
+
+---
+
+## Header files used:
+
+### 1. `stdlib.h` (Standard Library)
+
+*   **`rand()` & `srand()`**: 
+    *   Used to pick a random puzzle from the data files. 
+    *   `srand()` initializes the random number generator, and `rand() % totalPuzzles` ensures we get a valid index within the range of available puzzles.
+*   **`system("cls")`**: 
+    *   Used in the `clearScreen()` function. It invokes the operating system's command processor to clear the terminal, allowing the board to be "redrawn" in the same spot for a smooth UI.
+*   **`exit(1)`**: 
+    *   Used for emergency stops. If a critical file (like `easy.txt`) is missing, the program terminates safely rather than crashing.
+
+### 2. `time.h` (Time Library)
+*   **`time(NULL)`**: 
+    *   Used as a "seed" for `srand`. It returns the current system time in seconds. Because time is always moving forward, the seed is always different, ensuring the "random" puzzle selected is different every time you play.
+
+### 3. `windows.h` (Windows API)
+
+*   **`SetConsoleTextAttribute`**: 
+    *   This function changes the foreground (text) and background colors of the console.
+    *   **Usage in Program:** Our `setColor()` function uses this to distinguish between **Fixed numbers** (White), **User numbers** (Green), **Errors** (Red), and the **Cursor** (Yellow).
+*   **`GetStdHandle(STD_OUTPUT_HANDLE)`**: 
+    *   This retrieves a "handle" (a unique ID) for the standard output (the screen). The computer needs this ID to know which window to apply colors to.
+
+### 4. Advanced Data & Logic Techniques
+
+#### A. Custom Structures (`struct`)
+
+```c
+typedef struct {
+    int difficulty;
+    int mistakes;
+} Player;
+```
+*   **Benefit:** This groups related data into one "object," making it easier to pass the player's current state (like mistake count) between functions like `drawBoard` and `main`.
+
+
+#### B. Secure String Formatting (`snprintf`)
+Unlike `printf` which prints to the screen, `snprintf` prints into a character buffer (a string).
+*   **Usage:** `snprintf(msg, sizeof(msg), "Error message...")`
+*   **Why it's used:** It prevents **Buffer Overflow**. It ensures that even if the message is very long, it will never exceed the size of the `msg` array (128 bytes), making the program more stable.
+
+#### C. Extended Key Handling (Scan Codes)
+The game handles arrow keys which are not part of the standard ASCII table.
+*   **Prefix `224`**: Most special keys in Windows return a prefix of 224 first. The program catches this prefix and then calls `_getch()` a second time to get the specific direction (72 for Up, 80 for Down, etc.).
+
+### 5. Macro Definitions (`#define`)
+We used macros for constants like `MAX_MISTAKES`, `SIZE`, and various color codes (e.g., `CLR_TITLE`).
+*   **Benefit:** This makes the code highly **maintainable**.
