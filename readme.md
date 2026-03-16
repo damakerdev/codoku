@@ -1,4 +1,4 @@
-# Codoku
+# Codoku 🧮
 
 A terminal based Sudoku game for Windows built in C.  
 **BEI I / I Project — ENCT 101**

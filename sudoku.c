@@ -88,7 +88,7 @@ void showHomeScreen(Player *player)
     printf("       ___ ___   __| | ___ | | ___   _  \n");
     printf("      / __/ _ \\ / _` |/ _ \\| |/ / | | | \n");
     printf("     | (_| (_) | (_| | (_) |   <| |_| | \n");
-    printf("      \\___\\___/ \\__,_|\\___/|_|\\_\\__,_| \n");                           
+    printf("      \\___\\___/ \\__,_|\\___/|_|\\_\\__,__| \n");                           
     printf("\n");
 
     setColor(CLR_SUBTITLE);
@@ -387,20 +387,20 @@ int countLines(const char *filename)
 
 /* ------------------------------------------------------------------ */
 /*  Load a random puzzle from the chosen difficulty file              */
-/*  Also computes the full solution via backtracking                 */
+/*  Also loads the solution from the corresponding sol file           */
 /* ------------------------------------------------------------------ */
 void loadPuzzle(int (*board)[SIZE], int (*solution)[SIZE], int difficulty)
 {
-    const char *filename;
-    FILE *fp;
-    char line[MAX_LINE];
+    const char *filename, *solfilename;
+    FILE *fp, *solfp;
+    char line[MAX_LINE], solline[MAX_LINE];
     int totalPuzzles, chosen, current;
     int i, j;
 
     switch (difficulty) {
-        case 1:  filename = "data/easy.txt"; break;
-        case 2:  filename = "data/med.txt";  break;
-        default: filename = "data/hard.txt"; break;
+        case 1:  filename = "levels/easy.txt"; solfilename = "levels/sol_easy.txt"; break;
+        case 2:  filename = "levels/med.txt";  solfilename = "levels/sol_med.txt";  break;
+        default: filename = "levels/hard.txt"; solfilename = "levels/sol_hard.txt"; break;
     }
 
     totalPuzzles = countLines(filename);
@@ -430,6 +430,24 @@ void loadPuzzle(int (*board)[SIZE], int (*solution)[SIZE], int difficulty)
     }
     fclose(fp);
 
+    /* Load the corresponding solution */
+    solfp = fopen(solfilename, "r");
+    if (solfp == NULL) {
+        printf("Error: Could not open '%s'.\n", solfilename);
+        exit(1);
+    }
+
+    current = 0;
+    while (fgets(solline, MAX_LINE, solfp) != NULL) {
+        if (strlen(solline) >= 81) {
+            if (current == chosen) {
+                break;
+            }
+            current++;
+        }
+    }
+    fclose(solfp);
+
     /* Parse the 81-character line into the 9x9 board */
     i = 0;
     while (i < SIZE) {
@@ -441,17 +459,16 @@ void loadPuzzle(int (*board)[SIZE], int (*solution)[SIZE], int difficulty)
         i++;
     }
 
-    /* Copy board into solution and solve it */
+    /* Parse the solution line */
     i = 0;
     while (i < SIZE) {
         j = 0;
         while (j < SIZE) {
-            solution[i][j] = board[i][j];
+            solution[i][j] = solline[i * SIZE + j] - '0';
             j++;
         }
         i++;
     }
-    solveSudoku(solution);
 }
 
 /* ================================================================== */
