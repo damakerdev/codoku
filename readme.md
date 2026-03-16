@@ -45,13 +45,13 @@ A terminal based Sudoku game for Windows built in C.
 ## How to Compile
 
 ```bash
-gcc sudoku.c -o sudoku.exe
+gcc codoku.c -o codoku.exe
 ```
 
 ## How to Run
 
 ```bash
-./sudoku.exe
+./codoku.exe
 ```
 
 ---
@@ -113,7 +113,7 @@ Each line in the `.txt` files is one puzzle:  81 digits in a row, left to right,
 ## Project Structure
 
 ```
-sudoku.c           — main source file
+codoku.c           — main source file
 data/
   easy.txt         — easy puzzles
   med.txt          — medium puzzles
