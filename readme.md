@@ -3,6 +3,8 @@
 A terminal based Sudoku game for Windows built in C.  
 **BEI I / I Project — ENCT 101**
 
+![Gameplay](images/gameplay.gif)
+
 ---
 
 ## Team
@@ -22,7 +24,12 @@ A terminal based Sudoku game for Windows built in C.
 - Solution reveal on game over
 - Play again without restarting the program
 
+---
+
 ![Home Screen](images/home-screen.png)
+![Game Screen](images/game-screen.png)
+![Game Completed](images/game-completed.png)
+
 
 ---
 
@@ -58,9 +65,8 @@ gcc sudoku.c -o sudoku.exe
 | 0 / Backspace | Clear a cell |
 | ESC | Quit |
 
-![Gameplay](images/gameplay.gif)
-
 ---
+
 
 ## Puzzle File Format
 
@@ -88,6 +94,7 @@ Each line in the `.txt` files is one puzzle:  81 digits in a row, left to right,
 ```
 
 (`.` represents empty cells, which are `0` in the file)
+
 
 ---
 
